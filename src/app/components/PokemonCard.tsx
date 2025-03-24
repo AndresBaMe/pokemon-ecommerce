@@ -37,7 +37,7 @@ export default function PokemonCard({ id, name, image }: PokemonCardProps) {
       } 
     };
     addToCart(pokemon);
-    setCart(getCart());
+    setCart(getCart()); // Actualizamos el estado del carrito
     alert(`${name} agregado al carrito`);
   };
 
