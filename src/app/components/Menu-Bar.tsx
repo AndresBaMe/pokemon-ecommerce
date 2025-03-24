@@ -1,39 +1,65 @@
+'use client';
 
-'use client'
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-import Image from 'next/image'
-export default function Menubar(){
-    const handleClick=()=>{
-        alert('Hola')
-    }
-    return (
-        <div style={{ boxShadow: "0px 0px 25px 1px #000" }} className=" bg-[#211C84] rounded-b-[10] flex w-auto h-[100px] p-[16px_30px] justify-between items-center flex-shrink-0">
-            <div className='bg-[#ffff] rounded-[10] flex items-center'>
-                <input type="text" placeholder="Buscar..." className="font-bold font-mono text-black placeholder-black w-[930] h-[30] p-[10] focus:outline-none"/>
-                    <Image
-                          className="border-b-2 cursor-pointer"
-                          src="/searchIcon.svg"
-                          alt="Shoping cart icon"
-                          width={40}
-                          height={40}
-                          priority
-                    />
-            </div>
-            <select className='font-mono bg-white text-black rounded-[10] p-[5]'>
-                <option value="option1">option1</option>
-                <option value="option2">option2</option>
-                <option value="option3">option3</option>
-            </select>
-            <button className='bg-white rounded-[10] p-[5] cursor-pointer' onClick={handleClick}>
-                   <Image
-                          className="border-b-2 w-auto h-auto max-w-[180px]"
-                          src="/cartIcon.svg"
-                          alt="Shoping cart icon"
-                          width={61}
-                          height={61}
-                          priority
-                        />
-            </button>
+interface MenubarProps {
+  onSearch: (value: string) => void;
+}
+
+export default function Menubar({ onSearch }: MenubarProps) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    router.push('/login');
+  };
+
+  return (
+    <div className="bg-[#211C84] shadow-lg flex items-center justify-between h-[100px] px-6">
+      <Link href="/">
+        <div className="bg-white p-2 rounded-[10]">
+          <Image src="/home.svg" alt="home icon" width={40} height={40} />
         </div>
-    )
+      </Link>
+
+      <div className="bg-white rounded-[10px] flex items-center px-4 py-1 w-[930px]">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="w-full text-black font-mono p-2 outline-none"
+          onChange={(e) => onSearch(e.target.value.toLowerCase())}
+        />
+        <Image src="/searchIcon.svg" alt="search" width={30} height={30} />
+      </div>
+
+      <div className="flex gap-4 items-center">
+        <Link href="/cart">
+          <div className="bg-white p-2 rounded-[10]"> {/* Añadimos fondo blanco al botón */}
+            <Image src="/cartIcon.svg" alt="cart" width={40} height={40} />
+          </div>
+        </Link>
+        {isAuthenticated ? (
+          <button onClick={handleLogout} className="bg-white p-2 rounded-[10]"> {/* Añadimos fondo blanco al botón */}
+            <Image src="/logout.svg" alt="logout" width={40} height={40} />
+          </button>
+        ) : (
+          <Link href="/login">
+            <div className="bg-white p-2 rounded-[10]"> {/* Añadimos fondo blanco al botón */}
+              <Image src="/iniciar_sesion.svg" alt="login" width={40} height={40} />
+            </div>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
 }
