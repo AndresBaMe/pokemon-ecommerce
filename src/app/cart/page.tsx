@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { getCart, clearCart } from '../utils/cart';
 import Menubar from '../components/Menu-Bar';
+import Image from 'next/image';
 
 export default function Cart() {
   const [cart, setCart] = useState<any[]>([]);
@@ -30,7 +31,14 @@ export default function Cart() {
         {cart.map((item) => (
           <div key={item.id} className="bg-white shadow-md rounded-lg flex items-center p-4 justify-between">
             <div className="flex items-center gap-4">
-              <img src={item.image} alt={item.name} className="w-20 h-20 object-contain " />
+              
+              <Image
+  src={item.image}
+  alt={item.name}
+  width={80}  
+  height={80} 
+  className="w-20 h-20 object-contain"
+/>
               <div>
                 <h2 className="font-bold text-lg capitalize text-black">{item.name}</h2>
                 <div className="flex items-center gap-2 mt-1">
@@ -86,7 +94,13 @@ export default function Cart() {
         {cart.map((item) => (
           <div key={item.id} className="bg-white shadow-md rounded-lg flex items-center p-4 justify-between">
             <div className="flex items-center gap-4">
-              <img src={item.image} alt={item.name} className="w-20 h-20 object-contain " />
+            <Image
+  src={item.image}
+  alt={item.name}
+  width={80}  // Ajusta el tamaño según lo necesario (20 * 4)
+  height={80} // Ajusta el tamaño según lo necesario (20 * 4)
+  className="w-20 h-20 object-contain"
+/>
               <div>
                 <h2 className="font-bold text-lg capitalize text-black">{item.name}</h2>
                 <div className="flex items-center gap-2 mt-1">

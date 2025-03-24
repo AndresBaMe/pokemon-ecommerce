@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { getTypeColor } from '../utils/getTyoeColor';
 import Menubar from '../components/Menu-Bar';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
 
 interface PokemonData {
   id: number;
@@ -74,11 +75,13 @@ export default function PokemonDetail() {
       <div className="bg-white min-h-screen p-6 flex justify-center items-center">
         <div className="flex flex-col md:flex-row gap-8 shadow-xl border p-6 rounded-lg max-w-4xl bg-white">
           {/* Imagen del Pokémon */}
-          <img
-            src={data.sprites.other['official-artwork'].front_default}
-            alt={data.name}
-            className="w-64 h-64 object-contain mx-auto md:mx-0"
-          />
+          <Image
+  src={data.sprites.other['official-artwork'].front_default}
+  alt={data.name}
+  width={256} // Usando 64 * 4 para adaptarse al tamaño w-64 h-64
+  height={256} // Usando 64 * 4 para adaptarse al tamaño w-64 h-64
+  className="w-64 h-64 object-contain mx-auto md:mx-0"
+/>
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-2 capitalize text-black">{data.name}</h1>
             <p className="text-lg font-semibold mb-2 text-black">${1500}</p>
