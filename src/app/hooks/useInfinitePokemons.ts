@@ -1,12 +1,24 @@
-// hooks/useInfinitePokemons.ts
+'use client';
+
 import { useState, useEffect } from 'react';
 
+interface Pokemon {
+  id: number;
+  name: string;
+  sprites: {
+    other: {
+      'official-artwork': {
+        front_default: string;
+      };
+    };
+  };
+}
+
 export default function useInfinitePokemons() {
-  const [pokemons, setPokemons] = useState<any[]>([]);
+  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
 
-  // Función para cargar los Pokémon desde la API
   const fetchPokemons = async () => {
     setLoading(true);
     try {
@@ -14,16 +26,15 @@ export default function useInfinitePokemons() {
       const data = await response.json();
 
       const newPokemons = await Promise.all(
-        data.results.map(async (pokemon: any) => {
+        data.results.map(async (pokemon: { url: string }) => {
           const pokemonDetails = await fetch(pokemon.url);
           return pokemonDetails.json();
         })
       );
 
-      // Eliminar duplicados por ID
       setPokemons((prevPokemons) => {
         const all = [...prevPokemons, ...newPokemons];
-        const unique = Array.from(new Map(all.map(p => [p.id, p])).values());
+        const unique = Array.from(new Map(all.map((p: Pokemon) => [p.id, p])).values());
         return unique;
       });
     } catch (error) {
@@ -33,13 +44,12 @@ export default function useInfinitePokemons() {
     }
   };
 
-  // Detectar el scroll para cargar más Pokémon
   const handleScroll = () => {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const fullHeight = document.documentElement.scrollHeight;
 
-    const reachedBottom = scrollTop + windowHeight >= fullHeight - 100; // 100px antes del final
+    const reachedBottom = scrollTop + windowHeight >= fullHeight - 100;
 
     if (reachedBottom && !loading) {
       setOffset(prev => prev + 40);
@@ -47,13 +57,13 @@ export default function useInfinitePokemons() {
   };
 
   useEffect(() => {
-    fetchPokemons(); // Cargar Pokémon al montar el componente o cambiar offset
-  }, [offset]);
+    fetchPokemons();
+  }, [offset, fetchPokemons]); // Agrega fetchPokemons y offset a las dependencias
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading]); // No dependas de offset aquí para evitar múltiples eventos
+  }, [loading, handleScroll]); // Agrega handleScroll a las dependencias
 
   return { pokemons, loading };
 }

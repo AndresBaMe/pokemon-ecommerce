@@ -9,6 +9,18 @@ interface PokemonGridProps {
   searchQuery: string;
 }
 
+interface Pokemon {
+  id: number;
+  name: string;
+  sprites: {
+    other: {
+      'official-artwork': {
+        front_default: string;
+      };
+    };
+  };
+}
+
 export default function PokemonGrid({ searchQuery }: PokemonGridProps) {
   const { pokemons, loading } = useInfinitePokemons();
   const { allPokemons } = useAllPokemonNames();
@@ -39,31 +51,29 @@ export default function PokemonGrid({ searchQuery }: PokemonGridProps) {
     }
   }, [searchQuery, allPokemons]);
 
-  const filteredPokemons = pokemons.filter((p: any) =>
+  const filteredPokemons = pokemons.filter((p: Pokemon) =>
     p.name.toLowerCase().includes(searchQuery)
   );
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-     {searchResult && !filteredPokemons.some(p => Number(p.id) === searchResult.id)
- && (
-  <PokemonCard
-    key={`search-${searchResult.id}`}
-    id={searchResult.id}
-    name={searchResult.name}
-    image={searchResult.sprite}
-  />
-)}
+      {searchResult && !filteredPokemons.some(p => p.id === searchResult.id) && (
+        <PokemonCard
+          key={`search-${searchResult.id}`}
+          id={searchResult.id}
+          name={searchResult.name}
+          image={searchResult.sprite}
+        />
+      )}
 
-{filteredPokemons.map((p: any, index: number) => (
-  <PokemonCard
-    key={`pokemon-${p.id}-${index}`}  // Combina el id del pokemon con el índice para hacerlo único
-    id={p.id}
-    name={p.name}
-    image={p.sprites.other['official-artwork'].front_default}
-  />
-))}
-
+      {filteredPokemons.map((p: Pokemon, index: number) => (
+        <PokemonCard
+          key={`pokemon-${p.id}-${index}`}
+          id={p.id}
+          name={p.name}
+          image={p.sprites.other['official-artwork'].front_default}
+        />
+      ))}
 
       {loading && <p className="col-span-full text-center">Cargando...</p>}
     </div>

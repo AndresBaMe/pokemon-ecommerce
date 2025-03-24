@@ -4,8 +4,6 @@ import { getCart } from '../utils/cart';
 import Menubar from '../components/Menu-Bar';
 import Image from 'next/image';
 
-
-
 // Definimos la interfaz para los elementos del carrito
 interface CartItem {
   id: number;
@@ -16,7 +14,6 @@ interface CartItem {
 }
 
 export default function Cart() {
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [cart, setCart] = useState<CartItem[]>([]); // Usamos CartItem[] en lugar de any[]
 
   useEffect(() => {
@@ -37,7 +34,7 @@ export default function Cart() {
   if (cart.length === 0) {
     return (
       <>
-        <Menubar onSearch={setSearchQuery} />
+        <Menubar onSearch={() => {}} />
         <div className="flex flex-col md:flex-row gap-6 p-6 bg-white min-h-screen">
           <div className="flex-1 space-y-4">
             <div className="bg-white shadow-md rounded-lg flex items-center p-4 justify-between">
@@ -51,7 +48,7 @@ export default function Cart() {
 
   return (
     <>
-      <Menubar onSearch={setSearchQuery} />
+      <Menubar onSearch={() => {}} />
       <div className="flex flex-col md:flex-row gap-6 p-6 bg-white min-h-screen">
         <div className="flex-1 space-y-4">
           {cart.map((item) => (

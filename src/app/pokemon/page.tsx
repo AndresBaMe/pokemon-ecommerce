@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { getTypeColor } from '../utils/getTyoeColor';
 import Menubar from '../components/Menu-Bar';
 import Cookies from 'js-cookie';
@@ -19,10 +19,17 @@ interface PokemonData {
 }
 
 export default function PokemonDetail() {
-  const searchParams = useSearchParams();
-  const pokeParams = searchParams.get('id');
+  const [pokeParams, setPokeParams] = useState<string | null>(null);
   const [data, setData] = useState<PokemonData | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const router = useRouter();
+
+  // Usamos useEffect para manejar los parámetros de la URL
+  useEffect(() => {
+    // Obtener los parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
+    setPokeParams(params.get('id')); // Esto obtiene el parámetro 'id' de la URL
+  }, [router]);
 
   useEffect(() => {
     if (pokeParams) {
@@ -62,14 +69,14 @@ export default function PokemonDetail() {
 
   return (
     <div>
-      <Menubar onSearch={function (value: string): void { throw new Error('Function not implemented.'); }} />
+      <Menubar onSearch={function (): void { throw new Error('Function not implemented.'); }} />
       <div className="bg-white min-h-screen p-6 flex justify-center items-center">
         <div className="flex flex-col md:flex-row gap-8 shadow-xl border p-6 rounded-lg max-w-4xl bg-white">
           <Image
             src={data.sprites.other['official-artwork'].front_default}
             alt={data.name}
-            width={256} 
-            height={256} 
+            width={256}
+            height={256}
             className="w-64 h-64 object-contain mx-auto md:mx-0"
           />
           <div className="flex-1">
