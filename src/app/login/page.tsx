@@ -11,7 +11,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState(''); // Para manejar errores de login
   const router = useRouter(); 
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Cambio: Se especifica el tipo adecuado para el evento
     e.preventDefault();
   
     const user = { email, password };
@@ -39,7 +39,6 @@ export default function Login() {
       setErrorMessage('Error al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
     }
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#211C84] text-black px-4">
@@ -47,7 +46,6 @@ export default function Login() {
         style={{ boxShadow: "0px 0px 50px 9px #000" }}
         className="bg-white rounded-[20px] w-full max-w-md sm:w-96 md:w-[462px] h-auto sm:h-[500px] flex flex-col justify-center items-center p-6"
       >
-        {/* Imagen responsiva */}
         <Image
           className="border-b-2 w-auto h-auto max-w-[180px]"
           src="/image 2.svg"
@@ -59,14 +57,13 @@ export default function Login() {
 
         <h1 className="text-3xl font-bold mt-4">Inicia Sesión</h1>
 
-        {/* Mostrar mensaje de error si hay alguno */}
         {errorMessage && (
           <div className="text-red-500 mb-4 text-sm">{errorMessage}</div>
         )}
 
         <form className="mt-4 flex flex-col justify-center items-center w-full" onSubmit={handleSubmit}>
           <input
-            type="email"  // Cambié el tipo de input a email
+            type="email" 
             placeholder="Correo Electrónico"
             className="border-b-3 border-b-[#3B4CCA] p-2 w-full max-w-[350px] rounded-md focus:outline-none"
             onChange={(e) => setEmail(e.target.value)}

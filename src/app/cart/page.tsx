@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { getCart, clearCart } from '../utils/cart';
+import { getCart } from '../utils/cart';
 import Menubar from '../components/Menu-Bar';
 import Image from 'next/image';
 

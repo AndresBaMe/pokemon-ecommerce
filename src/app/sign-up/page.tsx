@@ -1,35 +1,32 @@
 'use client'
 import { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation'; // Importamos useRouter de Next.js
+import { useRouter } from 'next/navigation'; 
 
 export default function CreateUser() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const router = useRouter(); // Inicializamos useRouter
+  const router = useRouter();
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = async (e: any) => {
-    e.preventDefault(); // Evitar que la página se recargue al enviar el formulario
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { // Cambié 'any' a 'React.FormEvent<HTMLFormElement>'
+    e.preventDefault();
 
     const user = { username, email, password };
 
     try {
-      // Usar la URL completa del backend
       const response = await axios.post('https://ecommerce-backend-j9zm.onrender.com/api/users/register', user, {
         headers: {
-          'Content-Type': 'application/json', // Para asegurar que la API reciba JSON
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.status === 201) {
         setMessage('Usuario creado con éxito');
-        // Redirigir al login después de crear el usuario
         setTimeout(() => {
-          router.push('/login'); // Redirige a la página de login
-        }, 1000); // Retrasa la redirección para mostrar el mensaje
+          router.push('/login');
+        }, 1000);
       } else {
         setMessage('Error al crear el usuario');
       }

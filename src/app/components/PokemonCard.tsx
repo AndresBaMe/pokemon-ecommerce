@@ -1,9 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { addToCart, getCart } from '../utils/cart';
-import { useState } from 'react';
 
 interface PokemonCardProps {
   id: number;
@@ -11,11 +11,31 @@ interface PokemonCardProps {
   image: string;
 }
 
+interface Pokemon {
+  id: number;
+  name: string;
+  sprites: {
+    other: {
+      'official-artwork': {
+        front_default: string;
+      };
+    };
+  };
+}
+
 export default function PokemonCard({ id, name, image }: PokemonCardProps) {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<Pokemon[]>([]); // Usamos el tipo Pokemon en lugar de any[]
 
   const handleAddToCart = () => {
-    const pokemon = { id, name, sprites: { other: { 'official-artwork': { front_default: image } } } };
+    const pokemon: Pokemon = { 
+      id, 
+      name, 
+      sprites: { 
+        other: { 
+          'official-artwork': { front_default: image } 
+        } 
+      } 
+    };
     addToCart(pokemon);
     setCart(getCart());
     alert(`${name} agregado al carrito`);
@@ -24,13 +44,13 @@ export default function PokemonCard({ id, name, image }: PokemonCardProps) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
       <Link href={{ pathname: '/pokemon', query: { id } }}>
-      <Image
-  src={image}
-  alt={name}
-  width={500}  // Ajusta el tamaño según lo necesario
-  height={128} // Ajusta el tamaño según lo necesario
-  className="w-full h-32 object-contain"
-/>
+        <Image
+          src={image}
+          alt={name}
+          width={500}
+          height={128}
+          className="w-full h-32 object-contain"
+        />
         <h3 className="text-lg font-semibold mt-2 text-black capitalize">{name}</h3>
         <p className="text-gray-500">Precio: $1500</p>
         <p className="text-blue-500 text-sm">Envío gratis</p>
