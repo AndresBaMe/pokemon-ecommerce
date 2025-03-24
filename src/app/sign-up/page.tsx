@@ -18,7 +18,7 @@ export default function CreateUser() {
 
     try {
       // Usar la URL completa del backend
-      const response = await axios.post('http://localhost:5000/api/users/register', user, {
+      const response = await axios.post('https://ecommerce-backend-j9zm.onrender.com/api/users/register', user, {
         headers: {
           'Content-Type': 'application/json', // Para asegurar que la API reciba JSON
         },

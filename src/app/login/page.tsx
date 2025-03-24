@@ -17,7 +17,7 @@ export default function Login() {
     const user = { email, password };
   
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', user, {
+      const response = await axios.post('https://ecommerce-backend-j9zm.onrender.com/api/users/login', user, {
         headers: {
           'Content-Type': 'application/json',
         },
