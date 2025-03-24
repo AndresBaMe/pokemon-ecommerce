@@ -9,34 +9,51 @@ export default function useInfinitePokemons() {
   // Función para cargar los Pokémon desde la API
   const fetchPokemons = async () => {
     setLoading(true);
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=40&offset=${offset}`);
-    const data = await response.json();
-    const newPokemons = await Promise.all(
-      data.results.map(async (pokemon: any) => {
-        const pokemonDetails = await fetch(pokemon.url);
-        return pokemonDetails.json();
-      })
-    );
-    setPokemons((prevPokemons) => [...prevPokemons, ...newPokemons]);
-    setLoading(false);
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=40&offset=${offset}`);
+      const data = await response.json();
+
+      const newPokemons = await Promise.all(
+        data.results.map(async (pokemon: any) => {
+          const pokemonDetails = await fetch(pokemon.url);
+          return pokemonDetails.json();
+        })
+      );
+
+      // Eliminar duplicados por ID
+      setPokemons((prevPokemons) => {
+        const all = [...prevPokemons, ...newPokemons];
+        const unique = Array.from(new Map(all.map(p => [p.id, p])).values());
+        return unique;
+      });
+    } catch (error) {
+      console.error('Error al cargar Pokémon:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Detectar el scroll para cargar más Pokémon
   const handleScroll = () => {
-    const bottom = window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight;
-    if (bottom && !loading) {
-      setOffset(offset + 40); // Actualizar el offset para cargar los siguientes 40 Pokémon
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const fullHeight = document.documentElement.scrollHeight;
+
+    const reachedBottom = scrollTop + windowHeight >= fullHeight - 100; // 100px antes del final
+
+    if (reachedBottom && !loading) {
+      setOffset(prev => prev + 40);
     }
   };
 
   useEffect(() => {
-    fetchPokemons(); // Cargar Pokémon al montar el componente
+    fetchPokemons(); // Cargar Pokémon al montar el componente o cambiar offset
   }, [offset]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll); // Escuchar el evento de scroll
-    return () => window.removeEventListener('scroll', handleScroll); // Limpiar el evento cuando el componente se desmonte
-  }, [loading]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading]); // No dependas de offset aquí para evitar múltiples eventos
 
   return { pokemons, loading };
 }
